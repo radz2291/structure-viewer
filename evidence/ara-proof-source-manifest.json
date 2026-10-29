@@ -1,0 +1,49 @@
+{
+  "repository": "radz2291/vict-02",
+  "branch": "main",
+  "commit": "d7401bef6e48330796c74ec00c86db9622d48cdf",
+  "inspectedAt": "2026-10-29T19:21:01.741Z",
+  "files": [
+    {
+      "path": "examples/ara-proof/src/main.ts",
+      "blobSha": "165ebaee75a8601a409f452efe87496e40ecb518",
+      "url": "https://github.com/radz2291/vict-02/blob/d7401bef6e48330796c74ec00c86db9622d48cdf/examples/ara-proof/src/main.ts"
+    },
+    {
+      "path": "examples/ara-proof/src/ara.ts",
+      "blobSha": "227a0c59d6919f2817db5ac05b37621a21e3e57e",
+      "url": "https://github.com/radz2291/vict-02/blob/d7401bef6e48330796c74ec00c86db9622d48cdf/examples/ara-proof/src/ara.ts"
+    },
+    {
+      "path": "examples/ara-proof/src/assistant.ts",
+      "blobSha": "3206eab441454d04f85116be9c8c4cb40ea71a8d",
+      "url": "https://github.com/radz2291/vict-02/blob/d7401bef6e48330796c74ec00c86db9622d48cdf/examples/ara-proof/src/assistant.ts"
+    },
+    {
+      "path": "examples/ara-proof/src/capabilities.ts",
+      "blobSha": "db4bba618e7506f971652acc6e5f9945a4bfda06",
+      "url": "https://github.com/radz2291/vict-02/blob/d7401bef6e48330796c74ec00c86db9622d48cdf/examples/ara-proof/src/capabilities.ts"
+    },
+    {
+      "path": "examples/ara-proof/src/contracts.ts",
+      "blobSha": "2a72aacc864b082f42c2d790ff198b662e3ec84c",
+      "url": "https://github.com/radz2291/vict-02/blob/d7401bef6e48330796c74ec00c86db9622d48cdf/examples/ara-proof/src/contracts.ts"
+    },
+    {
+      "path": "examples/ara-proof/src/graph.ts",
+      "blobSha": "adb3ae9a6077d79b57dd9b8c6293c533bbab005f",
+      "url": "https://github.com/radz2291/vict-02/blob/d7401bef6e48330796c74ec00c86db9622d48cdf/examples/ara-proof/src/graph.ts"
+    },
+    {
+      "path": "examples/ara-proof/package.json",
+      "blobSha": "0c50a00e3bf825ae1fe7250780554bdb708c7119",
+      "url": "https://github.com/radz2291/vict-02/blob/d7401bef6e48330796c74ec00c86db9622d48cdf/examples/ara-proof/package.json"
+    },
+    {
+      "path": "examples/ara-proof/test/public-surface.test.ts",
+      "blobSha": "fc189a53ef9ad93dea55360ab4c0b51087b9dce0",
+      "url": "https://github.com/radz2291/vict-02/blob/d7401bef6e48330796c74ec00c86db9622d48cdf/examples/ara-proof/test/public-surface.test.ts"
+    }
+  ],
+  "execution": "Source inspection only; no target demo, runtime or tests executed."
+}

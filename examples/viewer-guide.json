@@ -1,0 +1,134 @@
+{
+  "schemaVersion": 1,
+  "id": "viewer-guide",
+  "project": "Structure Viewer",
+  "title": "How this viewer saves a question",
+  "description": "A second map, grounded in this app’s source. Nodes can represent experiences, data or decisions without a language-specific parser.",
+  "provenance": {
+    "repository": "https://github.com/radz2291/structure-viewer",
+    "revision": "Local v0.1.0 source",
+    "inspectedAt": "2026-10-29T16:13:53.093Z",
+    "method": "Authored from the implementation delivered with this viewer.",
+    "limitations": "A single save path; startup, browser layout and all error branches are outside this map."
+  },
+  "nodes": [
+    {
+      "id": "owner",
+      "title": "Ask a question",
+      "kind": "experience",
+      "summary": "A question can target a node or the whole map.",
+      "body": "The inspector collects a plain-text question. Save question sends an addNote operation with the currently viewed revision. Historical revisions cannot accept new notes.",
+      "evidence": "observed",
+      "sources": [
+        {
+          "file": "src/main.jsx",
+          "symbol": "saveNote"
+        }
+      ]
+    },
+    {
+      "id": "boundary",
+      "title": "Local API",
+      "kind": "boundary",
+      "summary": "Check origin, token, JSON size and expected revision.",
+      "body": "The Node server binds 127.0.0.1. It refuses foreign Host/Origin and cross-site requests. Writes require the session token and JSON. It passes a validated patch into Store.",
+      "evidence": "observed",
+      "sources": [
+        {
+          "file": "server.mjs",
+          "symbol": "createServer"
+        }
+      ]
+    },
+    {
+      "id": "revision",
+      "title": "Immutable revision",
+      "kind": "data",
+      "summary": "Validate, flush and publish one complete snapshot.",
+      "body": "Store.patch applies the note to a clone. Store.commit validates the document, checks expectedRevision and publishes a flushed JSON file through an atomic hard link. A collision fails instead of overwriting a prior version.",
+      "evidence": "observed",
+      "sources": [
+        {
+          "file": "lib/store.mjs",
+          "symbol": "Store.commit"
+        }
+      ]
+    },
+    {
+      "id": "shared",
+      "title": "Agent reads the same question",
+      "kind": "experience",
+      "summary": "CLI reads durable notes in the new revision.",
+      "body": "The owner sees the new saved revision. An agent can run node cli.mjs get viewer-guide and read the same note in document.notes, then submit another revision with an explanation. No automatic agent wakeup occurs.",
+      "evidence": "observed",
+      "sources": [
+        {
+          "file": "cli.mjs",
+          "symbol": "get"
+        },
+        {
+          "file": "src/main.jsx",
+          "symbol": "saveNote"
+        }
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "owner-api",
+      "source": "owner",
+      "target": "boundary",
+      "label": "submits addNote",
+      "body": "The question is sent with author and base revision.",
+      "evidence": "observed"
+    },
+    {
+      "id": "api-store",
+      "source": "boundary",
+      "target": "revision",
+      "label": "validates and commits",
+      "body": "A successful write publishes a new complete revision.",
+      "evidence": "observed"
+    },
+    {
+      "id": "store-agent",
+      "source": "revision",
+      "target": "shared",
+      "label": "is read by",
+      "body": "The CLI and browser read the same durable snapshots.",
+      "evidence": "observed"
+    }
+  ],
+  "views": [
+    {
+      "id": "save-path",
+      "title": "A question becomes shared context",
+      "description": "Understand the small bridge between the owner and the coding agent.",
+      "nodes": [
+        "owner",
+        "boundary",
+        "revision",
+        "shared"
+      ],
+      "positions": {
+        "owner": {
+          "x": 0,
+          "y": 0
+        },
+        "boundary": {
+          "x": 350,
+          "y": 0
+        },
+        "revision": {
+          "x": 350,
+          "y": 230
+        },
+        "shared": {
+          "x": 0,
+          "y": 230
+        }
+      }
+    }
+  ],
+  "notes": []
+}

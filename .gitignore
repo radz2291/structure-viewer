@@ -1,0 +1,19 @@
+node_modules/
+dist/
+data/
+*.log
+.npm-cache/
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Local authoring helpers and historical receipts may contain workstation data.
+scripts/
+evidence/*
+!evidence/PARITY-AND-STABILITY.md
+!evidence/source-manifest.json
+!evidence/ara-proof-source-manifest.json
+!evidence/tests-full-iteration.txt
+!evidence/build-stability-iteration.txt

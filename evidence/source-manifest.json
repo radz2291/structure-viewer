@@ -1,0 +1,39 @@
+{
+  "repository": "https://github.com/radz2291/vict-02 (authoring-foundation worktree inspected at the pinned revision)",
+  "gitHead": "4c40cc656328c50d16d28492ae5245bf509ccb6e",
+  "inspectedAt": "2026-10-29T16:13:53.084Z",
+  "files": [
+    {
+      "file": "apps/studio/src/lib/designer/StructureView.svelte",
+      "sha256": "0aa1e673dc3fc26356522b604b5c4027bf95b012eafdba2582878691fb8d08e1"
+    },
+    {
+      "file": "apps/studio/src/lib/designer/structure.ts",
+      "sha256": "1102455cae21c584848d487bf21f67931976cd50b1bffabe188cbd701a9938cb"
+    },
+    {
+      "file": "apps/studio/src/lib/designer/structure-connections.ts",
+      "sha256": "cf80225c4b0980ccdc4c73849650621cae41eea36bf43cb25459d7253275d3a9"
+    },
+    {
+      "file": "apps/studio/src/lib/designer/structure-placement.ts",
+      "sha256": "764610662449585c9f803172aac17a5bff90170f55d99bbf8e0cb153c7091b58"
+    },
+    {
+      "file": "apps/studio/src/lib/designer/StructuredSourceNode.svelte",
+      "sha256": "973efe1f4ed4cbbfaa01fbf1d6bdc737fadc707ad3d7fd01ff0d656d047d9c5e"
+    },
+    {
+      "file": "apps/studio/src/lib/designer/structure-behavior.ts",
+      "sha256": "4a06d4fc7a9df0428e6ae17ec147fdfb3217ea6754dfae8eef8c4bee7d148baf"
+    },
+    {
+      "file": "apps/studio/src/lib/designer/structure-trace.ts",
+      "sha256": "a550c99df67011287a7ae91c9c543145ec8cef8cf14d04f9aa7264d5aedc32e5"
+    },
+    {
+      "file": "apps/studio/src/lib/designer/studio-cards.css",
+      "sha256": "66f12593d0e5a951c88042495f8387398ff06c2617271f19831e398329a2b61c"
+    }
+  ]
+}

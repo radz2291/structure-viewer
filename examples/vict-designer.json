@@ -1,0 +1,518 @@
+{
+  "schemaVersion": 1,
+  "id": "vict-designer",
+  "project": "VICT · source study",
+  "title": "Understanding the Structure tab",
+  "description": "A focused reading of the paused Designer Structure implementation. Start with the overview, trace selection through the code, then discuss the open questions. This is a map of one subsystem, not a complete VICT architecture.",
+  "provenance": {
+    "repository": "https://github.com/radz2291/vict-02 (authoring-foundation worktree inspected at the pinned revision)",
+    "revision": "4c40cc656328c50d16d28492ae5245bf509ccb6e (worktree source; see evidence/source-manifest.json)",
+    "inspectedAt": "2026-10-29T16:13:53.084Z",
+    "method": "Read-only source inspection of the authoring-foundation worktree; symbol and line references resolved at authoring time. No VICT server or runtime activated.",
+    "limitations": "Static source evidence only. The worktree contains an uninstalled repair and may differ from installed Studio. No claim that this map is exhaustive or that the paused repair is accepted. Runtime behavior and the owner’s exact point of confusion remain unverified."
+  },
+  "nodes": [
+    {
+      "id": "document",
+      "title": "Authored UI document",
+      "kind": "data",
+      "summary": "The declarations the graph explains.",
+      "body": "StructureView receives a UiDocument and revision from its host. projectStructure reads nodes, local state, conditions, actions and definitions. The graph explains declarations; it is not a recording of runtime execution.",
+      "evidence": "observed",
+      "sources": [
+        {
+          "file": "apps/studio/src/lib/designer/StructureView.svelte",
+          "symbol": "document: UiDocument",
+          "line": 26
+        },
+        {
+          "file": "apps/studio/src/lib/designer/structure.ts",
+          "symbol": "export function projectStructure",
+          "line": 266
+        }
+      ]
+    },
+    {
+      "id": "projection",
+      "title": "Project the structure",
+      "kind": "function",
+      "summary": "Turns declarations into stable nodes and relationships.",
+      "body": "projectStructure builds a StructureGraph with nodes and edges. structureId encodes document ID, kind and source ID as a tuple so one declared source has stable identity. Projection preserves the connection to the source document.",
+      "evidence": "observed",
+      "sources": [
+        {
+          "file": "apps/studio/src/lib/designer/structure.ts",
+          "symbol": "export function projectStructure",
+          "line": 266
+        },
+        {
+          "file": "apps/studio/src/lib/designer/structure.ts",
+          "symbol": "export const structureId",
+          "line": 31
+        }
+      ]
+    },
+    {
+      "id": "scope",
+      "title": "Choose the visible neighborhood",
+      "kind": "function",
+      "summary": "View settings reduce what the owner sees.",
+      "body": "StructureView combines filtering, compact text treatment and the current scope. connectedSelectionStructure unions direct neighborhoods, keeping explicitly requested roots inside the display limit. This is a display projection, not a source edit.",
+      "evidence": "observed",
+      "sources": [
+        {
+          "file": "apps/studio/src/lib/designer/StructureView.svelte",
+          "symbol": "const projected =",
+          "line": 146
+        },
+        {
+          "file": "apps/studio/src/lib/designer/structure.ts",
+          "symbol": "export function connectedSelectionStructure",
+          "line": 580
+        },
+        {
+          "file": "apps/studio/src/lib/designer/structure.ts",
+          "symbol": "export function connectedStructure",
+          "line": 519
+        }
+      ]
+    },
+    {
+      "id": "connections",
+      "title": "Describe connections and ports",
+      "kind": "function",
+      "summary": "Labels, colors and endpoints explain each relation.",
+      "body": "structurePorts counts visible incoming and outgoing relations by role. structureConnectionEdges assigns role-specific handles, labels, arrow markers and line styles. These ports describe existing declarations; they do not grant new effect authority.",
+      "evidence": "observed",
+      "sources": [
+        {
+          "file": "apps/studio/src/lib/designer/structure-connections.ts",
+          "symbol": "export function structurePorts",
+          "line": 61
+        },
+        {
+          "file": "apps/studio/src/lib/designer/structure-connections.ts",
+          "symbol": "export function structureConnectionEdges",
+          "line": 77
+        }
+      ]
+    },
+    {
+      "id": "layout",
+      "title": "Arrange readable cards",
+      "kind": "function",
+      "summary": "ELK places cards while prior positions are retained.",
+      "body": "StructureView calls layoutGraph with the ELK engine. A LayoutFence prevents outdated results from replacing newer layouts. retainStructurePositions keeps known positions when a complete rearrange was not requested. A layout failure retains existing positions and gives a retry notice.",
+      "evidence": "observed",
+      "sources": [
+        {
+          "file": "apps/studio/src/lib/designer/StructureView.svelte",
+          "symbol": "void layoutGraph(currentNodes",
+          "line": 241
+        },
+        {
+          "file": "apps/studio/src/lib/designer/structure-placement.ts",
+          "symbol": "export function retainStructurePositions",
+          "line": 4
+        }
+      ]
+    },
+    {
+      "id": "canvas",
+      "title": "Explore the Structure canvas",
+      "kind": "experience",
+      "summary": "Pan, zoom, select, inspect and follow relations.",
+      "body": "FlowCanvas renders StructuredSourceNode cards and routed StructureEdge connections. In ordinary observation mode new connections are disabled. Selection and inspection are separate from source edits. The view offers fit/navigation and optional minimap.",
+      "evidence": "observed",
+      "sources": [
+        {
+          "file": "apps/studio/src/lib/designer/StructureView.svelte",
+          "symbol": "<FlowCanvas bind:nodes",
+          "line": 431
+        },
+        {
+          "file": "apps/studio/src/lib/designer/StructuredSourceNode.svelte",
+          "symbol": "structured-node-header",
+          "line": 22
+        }
+      ]
+    },
+    {
+      "id": "inspection",
+      "title": "Understand a selected source",
+      "kind": "experience",
+      "summary": "Plain behavior facts and source identity provide context.",
+      "body": "StructureView derives structureFacts for the inspected graph node and displays related relationships. structureBehavior describes declared interactions and structural branches, repeats and slots. It does not evaluate expressions or infer actual runtime state.",
+      "evidence": "observed",
+      "sources": [
+        {
+          "file": "apps/studio/src/lib/designer/StructureView.svelte",
+          "symbol": "const facts =",
+          "line": 132
+        },
+        {
+          "file": "apps/studio/src/lib/designer/structure.ts",
+          "symbol": "export function structureFacts",
+          "line": 458
+        },
+        {
+          "file": "apps/studio/src/lib/designer/structure-behavior.ts",
+          "symbol": "export function structureBehavior",
+          "line": 49
+        }
+      ]
+    },
+    {
+      "id": "request-selection",
+      "title": "Click a node",
+      "kind": "interaction",
+      "summary": "A selection intent enters the shared workspace selection.",
+      "body": "The FlowCanvas onnodeclick handler calls select. requestSelection refuses changes while a draft blocks selection. Otherwise it calls the host onSelectionIntent, or updates localSelection through changeSelection. This map traces declaration-level UI behavior from source inspection; it is not a live execution trace.",
+      "evidence": "observed",
+      "sources": [
+        {
+          "file": "apps/studio/src/lib/designer/StructureView.svelte",
+          "symbol": "onnodeclick=",
+          "line": 433
+        },
+        {
+          "file": "apps/studio/src/lib/designer/StructureView.svelte",
+          "symbol": "function select(",
+          "line": 268
+        },
+        {
+          "file": "apps/studio/src/lib/designer/StructureView.svelte",
+          "symbol": "function requestSelection(",
+          "line": 46
+        }
+      ]
+    },
+    {
+      "id": "selection",
+      "title": "Workspace selection",
+      "kind": "state",
+      "summary": "The chosen typed items remain the selection.",
+      "body": "currentSelection comes from the supplied workspace selection or local fallback. chosenItems are its typed node/edge items. A reactive effect applies selected flags to nodes and edges; for host-managed selection it sets inspectedId to the primary selected node.",
+      "evidence": "observed",
+      "sources": [
+        {
+          "file": "apps/studio/src/lib/designer/StructureView.svelte",
+          "symbol": "const currentSelection=",
+          "line": 38
+        },
+        {
+          "file": "apps/studio/src/lib/designer/StructureView.svelte",
+          "symbol": "const primary=primaryItem(currentSelection)",
+          "line": 76
+        }
+      ]
+    },
+    {
+      "id": "highlight",
+      "title": "Trace direct relationships",
+      "kind": "function",
+      "summary": "Highlight the selected item and directly related endpoints.",
+      "body": "selectionHighlight receives graph edges, typed selected items and optional hovered/focused edge previews. It collects selected nodes plus endpoints, edges and ports of directly incident relationships. Related endpoints become highlighted; they are not silently added to the selection.",
+      "evidence": "observed",
+      "sources": [
+        {
+          "file": "apps/studio/src/lib/designer/structure-trace.ts",
+          "symbol": "export function selectionHighlight",
+          "line": 23
+        }
+      ]
+    },
+    {
+      "id": "trace-context",
+      "title": "Share the highlight with cards",
+      "kind": "context",
+      "summary": "Nodes and ports read a current trace from context.",
+      "body": "StructureView publishes structureTraceContext. StructuredSourceNode reads it through getContext, derives traced and highlighted port states and dims unrelated cards. Port interactions can select or preview their declared edge groups.",
+      "evidence": "observed",
+      "sources": [
+        {
+          "file": "apps/studio/src/lib/designer/StructureView.svelte",
+          "symbol": "setContext<StructureTraceContext>",
+          "line": 61
+        },
+        {
+          "file": "apps/studio/src/lib/designer/StructuredSourceNode.svelte",
+          "symbol": "getContext<StructureTraceContext",
+          "line": 8
+        }
+      ]
+    },
+    {
+      "id": "readable-result",
+      "title": "See what connects to the choice",
+      "kind": "experience",
+      "summary": "The owner sees context without expanding the selection.",
+      "body": "The reference distinguishes selection from tracing. A chosen card keeps the accent selection border, its connected endpoints remain legible, and unrelated cards dim. This gives a useful observation model to reuse for an explanation viewer.",
+      "evidence": "inference",
+      "sources": [
+        {
+          "file": "apps/studio/src/lib/designer/StructuredSourceNode.svelte",
+          "symbol": ".trace-dim",
+          "line": 69
+        },
+        {
+          "file": "apps/studio/src/lib/designer/studio-cards.css",
+          "symbol": ".vict-source-node.selected",
+          "line": 18
+        }
+      ]
+    },
+    {
+      "id": "question-scope",
+      "title": "Where did implementation become hard to follow?",
+      "kind": "question",
+      "summary": "An owner question to explore together.",
+      "body": "Unknown: this source inspection cannot establish the precise point where Radzi lost the implementation thread. Start with one feature and ask the agent to map its entry, state changes and visible result at a pinned source revision. Avoid claiming this graph explains all VICT.",
+      "evidence": "inference",
+      "sources": []
+    },
+    {
+      "id": "proposal-viewer",
+      "title": "Use a small explanation document",
+      "kind": "decision",
+      "summary": "Keep the useful observation model, simplify the authoring boundary.",
+      "body": "Proposal implemented in this separate viewer: agents author plain nodes, relationships, viewpoints and source citations. Stable IDs and immutable revisions let the owner ask questions about the same evidence. Source mutation, UI runtime and automatic code parsing are outside this application.",
+      "evidence": "proposal",
+      "sources": []
+    },
+    {
+      "id": "question-proof",
+      "title": "What still needs a runtime check?",
+      "kind": "question",
+      "summary": "Static reading establishes intent, not product acceptance.",
+      "body": "Unknown: whether the paused repair behaves correctly in the installed Studio. This task does not activate or test that repair. These maps are grounded in the authoring-foundation worktree, which may differ from the installed runtime. Runtime behavior claims need a separately authorized observation.",
+      "evidence": "inference",
+      "sources": [
+        {
+          "file": "apps/studio/src/lib/designer/StructureView.svelte",
+          "symbol": "<FlowCanvas bind:nodes",
+          "line": 431
+        }
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "document-project",
+      "source": "document",
+      "target": "projection",
+      "label": "is projected by",
+      "body": "StructureView derives graph through projectStructure(document, descriptors and context).",
+      "evidence": "observed"
+    },
+    {
+      "id": "project-scope",
+      "source": "projection",
+      "target": "scope",
+      "label": "is narrowed by",
+      "body": "Visibility and direct-neighborhood projections choose a readable subset of the full graph.",
+      "evidence": "observed"
+    },
+    {
+      "id": "scope-connections",
+      "source": "scope",
+      "target": "connections",
+      "label": "describes",
+      "body": "structurePorts and structureConnectionEdges operate on the current graph.",
+      "evidence": "observed"
+    },
+    {
+      "id": "connections-layout",
+      "source": "connections",
+      "target": "layout",
+      "label": "is arranged",
+      "body": "Prepared nodes and connections enter the layout step.",
+      "evidence": "observed"
+    },
+    {
+      "id": "layout-canvas",
+      "source": "layout",
+      "target": "canvas",
+      "label": "places",
+      "body": "Resolved positions and routed edges update the rendered FlowCanvas.",
+      "evidence": "observed"
+    },
+    {
+      "id": "canvas-inspection",
+      "source": "canvas",
+      "target": "inspection",
+      "label": "supports inspection",
+      "body": "Selection and inspect commands identify a graph source; facts and related edges are derived.",
+      "evidence": "observed"
+    },
+    {
+      "id": "click-selection",
+      "source": "request-selection",
+      "target": "selection",
+      "label": "selects",
+      "body": "select routes typed node selection through requestSelection into host or local selection.",
+      "evidence": "observed"
+    },
+    {
+      "id": "selection-highlight",
+      "source": "selection",
+      "target": "highlight",
+      "label": "drives",
+      "body": "tracedConnection is derived using selectionHighlight and the chosen typed items.",
+      "evidence": "observed"
+    },
+    {
+      "id": "highlight-context",
+      "source": "highlight",
+      "target": "trace-context",
+      "label": "publishes",
+      "body": "The context current getter exposes tracedConnection to descendant cards.",
+      "evidence": "observed"
+    },
+    {
+      "id": "context-result",
+      "source": "trace-context",
+      "target": "readable-result",
+      "label": "highlights",
+      "body": "Node and port classes reflect traced membership and selected state.",
+      "evidence": "observed"
+    },
+    {
+      "id": "selection-inspection",
+      "source": "selection",
+      "target": "inspection",
+      "label": "inspects",
+      "body": "With host-managed selection the primary node updates inspectedId; facts derive from it.",
+      "evidence": "observed"
+    },
+    {
+      "id": "scope-result",
+      "source": "scope",
+      "target": "readable-result",
+      "label": "limits the visual context",
+      "body": "Neighborhood focus bounds how much context the owner has to read.",
+      "evidence": "inference"
+    },
+    {
+      "id": "question-proposal",
+      "source": "question-scope",
+      "target": "proposal-viewer",
+      "label": "motivates",
+      "body": "The viewer provides one shared explanation surface for owner and agent.",
+      "evidence": "proposal"
+    },
+    {
+      "id": "proposal-proof",
+      "source": "proposal-viewer",
+      "target": "question-proof",
+      "label": "retains an evidence boundary",
+      "body": "Authored explanations must label limits and avoid claiming installed runtime verification.",
+      "evidence": "proposal"
+    }
+  ],
+  "notes": [],
+  "views": [
+    {
+      "id": "overview",
+      "title": "How Structure works",
+      "description": "Follow the document from declarations to a readable, inspectable graph.",
+      "nodes": [
+        "document",
+        "projection",
+        "scope",
+        "connections",
+        "layout",
+        "canvas"
+      ],
+      "positions": {
+        "document": {
+          "x": 0,
+          "y": 0
+        },
+        "projection": {
+          "x": 330,
+          "y": 0
+        },
+        "scope": {
+          "x": 660,
+          "y": 0
+        },
+        "connections": {
+          "x": 660,
+          "y": 230
+        },
+        "layout": {
+          "x": 330,
+          "y": 230
+        },
+        "canvas": {
+          "x": 0,
+          "y": 230
+        }
+      }
+    },
+    {
+      "id": "selection-path",
+      "title": "When you select a node",
+      "description": "One behavior, end to end: click → selection → trace → readable context.",
+      "nodes": [
+        "request-selection",
+        "selection",
+        "highlight",
+        "trace-context",
+        "readable-result",
+        "inspection"
+      ],
+      "positions": {
+        "request-selection": {
+          "x": 0,
+          "y": 0
+        },
+        "selection": {
+          "x": 330,
+          "y": 0
+        },
+        "highlight": {
+          "x": 660,
+          "y": 0
+        },
+        "trace-context": {
+          "x": 660,
+          "y": 230
+        },
+        "readable-result": {
+          "x": 330,
+          "y": 230
+        },
+        "inspection": {
+          "x": 0,
+          "y": 230
+        }
+      }
+    },
+    {
+      "id": "discussion",
+      "title": "What to clarify next",
+      "description": "Separate what we know from the questions and changes we can discuss.",
+      "nodes": [
+        "question-scope",
+        "proposal-viewer",
+        "question-proof"
+      ],
+      "positions": {
+        "question-scope": {
+          "x": 0,
+          "y": 0
+        },
+        "proposal-viewer": {
+          "x": 350,
+          "y": 0
+        },
+        "question-proof": {
+          "x": 700,
+          "y": 0
+        }
+      }
+    }
+  ]
+}

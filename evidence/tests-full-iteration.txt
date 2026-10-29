@@ -1,0 +1,104 @@
+
+> structure-viewer@0.1.0 test
+> node --test tests/*.test.mjs
+
+TAP version 13
+# Subtest: reproduces the old measurement loss in the actual graph engine; hover and selection retain initialized cards and socket bounds
+ok 1 - reproduces the old measurement loss in the actual graph engine; hover and selection retain initialized cards and socket bounds
+  ---
+  duration_ms: 7.5361
+  ...
+# Subtest: only a geometry change invalidates measurements; preview and unchanged positions are idempotent
+ok 2 - only a geometry change invalidates measurements; preview and unchanged positions are idempotent
+  ---
+  duration_ms: 0.5356
+  ...
+# Subtest: every layout keeps the same visible role sockets; feedback routing is independent of selection
+ok 3 - every layout keeps the same visible role sockets; feedback routing is independent of selection
+  ---
+  duration_ms: 1.4723
+  ...
+# Subtest: painted duplicate groups retain canonical records without folding different authored roles or evidence
+ok 4 - painted duplicate groups retain canonical records without folding different authored roles or evidence
+  ---
+  duration_ms: 0.6921
+  ...
+# Subtest: refresh/version restoration keeps valid context and never restores an empty focus or a foreign document selection
+ok 5 - refresh/version restoration keeps valid context and never restores an empty focus or a foreign document selection
+  ---
+  duration_ms: 0.6497
+  ...
+# Subtest: real HTTP boundary: CRUD, optimistic concurrency, security, invalid input, restart
+ok 6 - real HTTP boundary: CRUD, optimistic concurrency, security, invalid input, restart
+  ---
+  duration_ms: 232.4874
+  ...
+# Subtest: create, update, delete node, archive, restore and restart preserve prior revisions
+ok 7 - create, update, delete node, archive, restore and restart preserve prior revisions
+  ---
+  duration_ms: 152.6053
+  ...
+# Subtest: reject stale writers, malformed maps, paths, duplicate IDs, dangling relations and invalid views
+ok 8 - reject stale writers, malformed maps, paths, duplicate IDs, dangling relations and invalid views
+  ---
+  duration_ms: 22.3347
+  ...
+# Subtest: notes persist with attribution, context revision, stable target; bad patch is atomic
+ok 9 - notes persist with attribution, context revision, stable target; bad patch is atomic
+  ---
+  duration_ms: 49.0955
+  ...
+# Subtest: all shipped maps validate
+ok 10 - all shipped maps validate
+  ---
+  duration_ms: 11.2886
+  ...
+# Subtest: relationship roles are optional authored semantics, independent of evidence and never guessed from a label
+ok 11 - relationship roles are optional authored semantics, independent of evidence and never guessed from a label
+  ---
+  duration_ms: 1.2532
+  ...
+# Subtest: archived-only projects select an eligible map; archive visibility transitions preserve a valid selection
+ok 12 - archived-only projects select an eligible map; archive visibility transitions preserve a valid selection
+  ---
+  duration_ms: 4.098
+  ...
+# Subtest: pending or failed document loads safely hide a retained group; a new document supplies fresh labels
+ok 13 - pending or failed document loads safely hide a retained group; a new document supplies fresh labels
+  ---
+  duration_ms: 1.0256
+  ...
+# Subtest: relationship-row clicks replace normally and add or remove with Ctrl, Meta or Shift
+ok 14 - relationship-row clicks replace normally and add or remove with Ctrl, Meta or Shift
+  ---
+  duration_ms: 0.8876
+  ...
+# Subtest: ports group relationship labels and semantic roles independently of evidence
+ok 15 - ports group relationship labels and semantic roles independently of evidence
+  ---
+  duration_ms: 1.1454
+  ...
+# Subtest: group selection and partial port selection preserve explicitly selected objects only
+ok 16 - group selection and partial port selection preserve explicitly selected objects only
+  ---
+  duration_ms: 1.3676
+  ...
+# Subtest: group focus unions direct neighborhoods within the authored view; hover tracing never changes selection
+ok 17 - group focus unions direct neighborhoods within the authored view; hover tracing never changes selection
+  ---
+  duration_ms: 1.1737
+  ...
+# Subtest: arrangement handles branching, cycles, disconnected nodes and measured heights without mutating authored positions
+ok 18 - arrangement handles branching, cycles, disconnected nodes and measured heights without mutating authored positions
+  ---
+  duration_ms: 39.4015
+  ...
+1..18
+# tests 18
+# suites 0
+# pass 18
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 641.981

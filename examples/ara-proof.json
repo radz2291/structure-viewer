@@ -1,0 +1,524 @@
+{
+  "schemaVersion": 1,
+  "id": "ara-proof",
+  "project": "VICT · ara-proof example",
+  "title": "One deterministic ARA turn",
+  "description": "Read the small command-line example as responsibilities, then follow one message through its four capabilities. This is an explanation of the source, not an acceptance proof or a map of deployed ARA Light.",
+  "provenance": {
+    "repository": "https://github.com/radz2291/vict-02/tree/d7401bef6e48330796c74ec00c86db9622d48cdf/examples/ara-proof",
+    "revision": "d7401bef6e48330796c74ec00c86db9622d48cdf",
+    "inspectedAt": "2026-10-29T19:21:01.741Z",
+    "method": "Read-only GitHub source inspection through the connected GitHub tools. Resolved main first, then fetched all cited files at that exact commit. Source-declared behavior and test assertions only.",
+    "limitations": "No target code, demo or tests executed. This is not deployed ARA Light or its backend. The test file reimplements a related ara2 graph. Runtime internals, long-lived conversation reuse and production integration are not established by this folder."
+  },
+  "nodes": [
+    {
+      "id": "entry",
+      "title": "Start one example turn",
+      "kind": "entry point",
+      "summary": "A command-line entry reads text and calls runAraTurn.",
+      "body": "The package's demo script runs src/main.ts. main() reads process.argv[2], or uses “Help me make this practical”, then awaits runAraTurn(text). This is a small command-line example inside vict-02. It is not the deployed ARA Light app or backend.",
+      "evidence": "observed",
+      "sources": [
+        {
+          "file": "examples/ara-proof/package.json",
+          "symbol": "\"demo\"",
+          "line": 8
+        },
+        {
+          "file": "examples/ara-proof/src/main.ts",
+          "symbol": "async function main",
+          "line": 9
+        }
+      ]
+    },
+    {
+      "id": "runtime",
+      "title": "Configure the runtime",
+      "kind": "function",
+      "summary": "Register four capabilities and activate one graph.",
+      "body": "createAraRuntime creates a VICT runtime, registers the four ARA capabilities, and awaits runtime.activate(araGraph). Failed activation throws with issue messages. runAraTurn calls this setup, then runtime.run({text}), and returns the result plus graph, capability-set and activation versions.",
+      "evidence": "observed",
+      "sources": [
+        {
+          "file": "examples/ara-proof/src/ara.ts",
+          "symbol": "export async function createAraRuntime",
+          "line": 11
+        },
+        {
+          "file": "examples/ara-proof/src/ara.ts",
+          "symbol": "export async function runAraTurn",
+          "line": 23
+        }
+      ]
+    },
+    {
+      "id": "graph",
+      "title": "Declare the four-step path",
+      "kind": "graph",
+      "summary": "user-message → prepare-context → assistant → assistant-response.",
+      "body": "araGraph names the entry user-message, binds four node IDs to their capability IDs, and connects them in a simple chain. It declares topology; implementations live in capabilities.ts. The graph node called assistant is backed by a deterministic function here.",
+      "evidence": "observed",
+      "sources": [
+        {
+          "file": "examples/ara-proof/src/graph.ts",
+          "symbol": "export const araGraph",
+          "line": 8
+        }
+      ]
+    },
+    {
+      "id": "capabilities",
+      "title": "Bind work to contracts",
+      "kind": "module",
+      "summary": "Each capability states its input, output and effect.",
+      "body": "registerAraCapabilities registers user-message, prepare-context, assistant and assistant-response. Three are marked pure. The assistant capability is marked read, but its implementation in this example calls deterministicAssistant; that effect classification does not imply a network model call occurred.",
+      "evidence": "observed",
+      "sources": [
+        {
+          "file": "examples/ara-proof/src/capabilities.ts",
+          "symbol": "export function registerAraCapabilities",
+          "line": 61
+        },
+        {
+          "file": "examples/ara-proof/src/capabilities.ts",
+          "symbol": "export function createAssistantCapability",
+          "line": 40
+        }
+      ]
+    },
+    {
+      "id": "contracts",
+      "title": "Keep message shapes explicit",
+      "kind": "contracts",
+      "summary": "User text → prepared context → assistant message.",
+      "body": "contracts.ts opts into the SDK's Zod adapter. The three version-1 contracts declare nonempty input text, text with a string-array context, and a nonempty assistant reply with role 'assistant'. main.ts checks the final output again before printing it.",
+      "evidence": "observed",
+      "sources": [
+        {
+          "file": "examples/ara-proof/src/contracts.ts",
+          "symbol": "export const UserMessageContract",
+          "line": 28
+        },
+        {
+          "file": "examples/ara-proof/src/contracts.ts",
+          "symbol": "export const PreparedContextContract",
+          "line": 36
+        },
+        {
+          "file": "examples/ara-proof/src/contracts.ts",
+          "symbol": "export const AssistantMessageContract",
+          "line": 44
+        }
+      ]
+    },
+    {
+      "id": "provider",
+      "title": "Generate a deterministic reply",
+      "kind": "function",
+      "summary": "Same input produces the same local response.",
+      "body": "deterministicAssistant trims and normalizes whitespace in the input text, then formats a fixed reply mentioning how many context notes it received. The inspected implementation has no model-provider request. It demonstrates the orchestration shape rather than AI response quality.",
+      "evidence": "observed",
+      "sources": [
+        {
+          "file": "examples/ara-proof/src/assistant.ts",
+          "symbol": "export function deterministicAssistant",
+          "line": 11
+        }
+      ]
+    },
+    {
+      "id": "normalize",
+      "title": "Normalize the user text",
+      "kind": "capability",
+      "summary": "The first capability trims the text.",
+      "body": "ara.user-message is pure. Its input and output are UserMessageContract; invoke returns {text: input.text.trim()}. araGraph declares it as the entry. This map describes the source-declared path, not a captured execution.",
+      "evidence": "observed",
+      "sources": [
+        {
+          "file": "examples/ara-proof/src/capabilities.ts",
+          "symbol": "export const userMessageCapability",
+          "line": 19
+        },
+        {
+          "file": "examples/ara-proof/src/graph.ts",
+          "symbol": "entry: 'user-message'",
+          "line": 10
+        }
+      ]
+    },
+    {
+      "id": "prepare",
+      "title": "Add two context notes",
+      "kind": "capability",
+      "summary": "Carry text forward with a small context array.",
+      "body": "ara.prepare-context is pure. It returns the text and two deterministic notes: a conversation label and the user's goal. There is no repository search, memory service or model context retrieval in this function.",
+      "evidence": "observed",
+      "sources": [
+        {
+          "file": "examples/ara-proof/src/capabilities.ts",
+          "symbol": "export const prepareContextCapability",
+          "line": 28
+        }
+      ]
+    },
+    {
+      "id": "assistant",
+      "title": "Call the assistant capability",
+      "kind": "capability",
+      "summary": "The read-classified step invokes deterministicAssistant.",
+      "body": "createAssistantCapability declares PreparedContextContract → AssistantMessageContract and effect 'read'. invoke calls the local deterministicAssistant implementation. The source includes no live provider configuration or credentials in this example.",
+      "evidence": "observed",
+      "sources": [
+        {
+          "file": "examples/ara-proof/src/capabilities.ts",
+          "symbol": "export function createAssistantCapability",
+          "line": 40
+        },
+        {
+          "file": "examples/ara-proof/src/assistant.ts",
+          "symbol": "export function deterministicAssistant",
+          "line": 11
+        }
+      ]
+    },
+    {
+      "id": "respond",
+      "title": "Return the assistant message",
+      "kind": "capability",
+      "summary": "Forward the declared role and text.",
+      "body": "ara.assistant-response is pure and has the assistant message contract on both sides. Its invoke returns the incoming role and text, completing the four-node chain.",
+      "evidence": "observed",
+      "sources": [
+        {
+          "file": "examples/ara-proof/src/capabilities.ts",
+          "symbol": "export const assistantResponseCapability",
+          "line": 51
+        }
+      ]
+    },
+    {
+      "id": "output",
+      "title": "Validate and print the result",
+      "kind": "output",
+      "summary": "Print structured text, version identities and ordered events.",
+      "body": "After runAraTurn, main requires status completed and a present output. It parses the output using AssistantMessageContract. Failures print an error and exit with code 1. On success it prints the structured response, run ID, topology/capability-set/activation versions and the sequence/type of each event in result.trace.",
+      "evidence": "observed",
+      "sources": [
+        {
+          "file": "examples/ara-proof/src/main.ts",
+          "symbol": "result.status !== 'completed'",
+          "line": 14
+        },
+        {
+          "file": "examples/ara-proof/src/main.ts",
+          "symbol": "const validated =",
+          "line": 19
+        },
+        {
+          "file": "examples/ara-proof/src/main.ts",
+          "symbol": "for (const event of result.trace)",
+          "line": 33
+        }
+      ]
+    },
+    {
+      "id": "test-source",
+      "title": "Read what the tests assert",
+      "kind": "test source",
+      "summary": "Public-surface tests reimplement a related ara2 graph.",
+      "body": "public-surface.test.ts builds its own ara2 capabilities and graph against public APIs. It asserts the four-step order, final contract, 13 events and identity fields; it also tests simulation with a registered double. Those are inspected test assertions. I did not execute them or use them as an acceptance verdict for this viewer.",
+      "evidence": "observed",
+      "sources": [
+        {
+          "file": "examples/ara-proof/test/public-surface.test.ts",
+          "symbol": "async function buildAraRuntime",
+          "line": 92
+        },
+        {
+          "file": "examples/ara-proof/test/public-surface.test.ts",
+          "symbol": "exactly 13 events",
+          "line": 166
+        }
+      ]
+    },
+    {
+      "id": "runtime-question",
+      "title": "Is setup reused between turns?",
+      "kind": "question",
+      "summary": "The wrapper constructs a runtime for each runAraTurn call.",
+      "body": "Observed call structure: runAraTurn invokes createAraRuntime on each call. The setup comment says compilation is kept out of the conversational hot path, but a long-lived conversation host is not shown in this folder. Whether or how to reuse the activated runtime is a design question for a real application, not something this example establishes.",
+      "evidence": "inference",
+      "sources": [
+        {
+          "file": "examples/ara-proof/src/ara.ts",
+          "symbol": "export async function runAraTurn",
+          "line": 23
+        }
+      ]
+    },
+    {
+      "id": "scope-limit",
+      "title": "Keep the example's boundary clear",
+      "kind": "scope",
+      "summary": "A local orchestration example, not ARA Light.",
+      "body": "This map explains only examples/ara-proof at the pinned GitHub main commit. It does not establish deployed ARA behavior, live model integration, durable multi-turn chat, or production acceptance. Runtime/compiler internals were not traced exhaustively. No target source was changed and no example command or tests were run.",
+      "evidence": "inference",
+      "sources": [
+        {
+          "file": "examples/ara-proof/package.json",
+          "symbol": "\"description\"",
+          "line": 6
+        },
+        {
+          "file": "examples/ara-proof/src/assistant.ts",
+          "symbol": "Deterministic assistant provider",
+          "line": 4
+        }
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "entry-runtime",
+      "source": "entry",
+      "target": "runtime",
+      "label": "calls",
+      "role": "action",
+      "body": "main passes one input text to runAraTurn, which configures and runs the example.",
+      "evidence": "observed"
+    },
+    {
+      "id": "runtime-graph",
+      "source": "runtime",
+      "target": "graph",
+      "label": "activates",
+      "role": "definition",
+      "body": "createAraRuntime awaits runtime.activate(araGraph).",
+      "evidence": "observed"
+    },
+    {
+      "id": "runtime-capabilities",
+      "source": "runtime",
+      "target": "capabilities",
+      "label": "registers",
+      "role": "definition",
+      "body": "Runtime setup calls registerAraCapabilities before activation.",
+      "evidence": "observed"
+    },
+    {
+      "id": "graph-capabilities",
+      "source": "graph",
+      "target": "capabilities",
+      "label": "binds",
+      "role": "definition",
+      "body": "Each graph node points to one registered capability ID.",
+      "evidence": "observed"
+    },
+    {
+      "id": "cap-contracts",
+      "source": "capabilities",
+      "target": "contracts",
+      "label": "declares",
+      "role": "definition",
+      "body": "Capabilities specify these input and output contracts.",
+      "evidence": "observed"
+    },
+    {
+      "id": "cap-provider",
+      "source": "capabilities",
+      "target": "provider",
+      "label": "invokes",
+      "role": "action",
+      "body": "The assistant capability calls deterministicAssistant.",
+      "evidence": "observed"
+    },
+    {
+      "id": "entry-normalize",
+      "source": "entry",
+      "target": "normalize",
+      "label": "starts at",
+      "role": "action",
+      "body": "The entry calls the wrapper; the activated graph declares user-message as its entry. This is the authored behavior path.",
+      "evidence": "observed"
+    },
+    {
+      "id": "normal-prepare",
+      "source": "normalize",
+      "target": "prepare",
+      "label": "passes text",
+      "role": "read",
+      "body": "araGraph routes the user-message output to prepare-context.",
+      "evidence": "observed"
+    },
+    {
+      "id": "prepare-assistant",
+      "source": "prepare",
+      "target": "assistant",
+      "label": "supplies context",
+      "role": "read",
+      "body": "The prepared text and two context notes become the assistant capability input.",
+      "evidence": "observed"
+    },
+    {
+      "id": "assistant-respond",
+      "source": "assistant",
+      "target": "respond",
+      "label": "passes reply",
+      "role": "read",
+      "body": "araGraph routes the assistant message to assistant-response.",
+      "evidence": "observed"
+    },
+    {
+      "id": "respond-output",
+      "source": "respond",
+      "target": "output",
+      "label": "returns result",
+      "role": "read",
+      "body": "runtime.run returns to the wrapper and main; main checks and prints the final result.",
+      "evidence": "observed"
+    },
+    {
+      "id": "tests-graph",
+      "source": "test-source",
+      "target": "graph",
+      "label": "models a variant",
+      "role": "reference",
+      "body": "The public-surface tests declare ara2-proof rather than directly importing araGraph; their assertions are related source evidence, not a runtime observation of this example.",
+      "evidence": "observed"
+    },
+    {
+      "id": "runtime-open",
+      "source": "runtime-question",
+      "target": "runtime",
+      "label": "questions reuse",
+      "role": "reference",
+      "body": "The wrapper creates its runtime per call; a persistent conversational host is outside this folder.",
+      "evidence": "inference"
+    },
+    {
+      "id": "limits-test",
+      "source": "scope-limit",
+      "target": "test-source",
+      "label": "bounds the evidence",
+      "role": "reference",
+      "body": "Reading test source does not establish that those tests passed here.",
+      "evidence": "inference"
+    }
+  ],
+  "notes": [],
+  "views": [
+    {
+      "id": "overview",
+      "title": "What the example contains",
+      "description": "Start at the command line, then distinguish runtime setup, graph, capabilities, contracts and the local reply function.",
+      "nodes": [
+        "entry",
+        "runtime",
+        "graph",
+        "capabilities",
+        "contracts",
+        "provider"
+      ],
+      "positions": {
+        "entry": {
+          "x": 0,
+          "y": 0
+        },
+        "runtime": {
+          "x": 330,
+          "y": 0
+        },
+        "graph": {
+          "x": 660,
+          "y": 0
+        },
+        "capabilities": {
+          "x": 330,
+          "y": 240
+        },
+        "contracts": {
+          "x": 660,
+          "y": 240
+        },
+        "provider": {
+          "x": 0,
+          "y": 240
+        }
+      }
+    },
+    {
+      "id": "one-turn",
+      "title": "Follow one message",
+      "description": "Input → trim → context → deterministic reply → output. Click a connection point to inspect what moves between steps.",
+      "nodes": [
+        "entry",
+        "normalize",
+        "prepare",
+        "assistant",
+        "respond",
+        "output"
+      ],
+      "positions": {
+        "entry": {
+          "x": 0,
+          "y": 0
+        },
+        "normalize": {
+          "x": 330,
+          "y": 0
+        },
+        "prepare": {
+          "x": 660,
+          "y": 0
+        },
+        "assistant": {
+          "x": 660,
+          "y": 240
+        },
+        "respond": {
+          "x": 330,
+          "y": 240
+        },
+        "output": {
+          "x": 0,
+          "y": 240
+        }
+      }
+    },
+    {
+      "id": "boundaries",
+      "title": "What this leaves open",
+      "description": "Separate source declarations and test assertions from unanswered application questions.",
+      "nodes": [
+        "scope-limit",
+        "test-source",
+        "graph",
+        "runtime-question",
+        "runtime"
+      ],
+      "positions": {
+        "scope-limit": {
+          "x": 0,
+          "y": 0
+        },
+        "test-source": {
+          "x": 330,
+          "y": 0
+        },
+        "graph": {
+          "x": 660,
+          "y": 0
+        },
+        "runtime-question": {
+          "x": 330,
+          "y": 240
+        },
+        "runtime": {
+          "x": 660,
+          "y": 240
+        }
+      }
+    }
+  ]
+}
